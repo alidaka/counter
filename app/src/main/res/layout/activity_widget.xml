@@ -3,23 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button android:id="@+id/widget_label"
+    <TextView android:id="@+id/widget_label"
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:background="#5f00" />
 
-    <Button android:id="@+id/count_value"
+    <TextView android:id="@+id/count_value"
         android:layout_below="@id/widget_label"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="#50f0" />
 
-    <Button android:id="@+id/decrement_button"
+    <TextView android:id="@+id/decrement_button"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:background="@android:color/transparent"
+        android:background="#500f"
         android:text="--" />
 
 </RelativeLayout>

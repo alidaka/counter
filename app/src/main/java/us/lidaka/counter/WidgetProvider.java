@@ -9,42 +9,40 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-/**
- * Created by augustus on 1/24/16.
- */
 public class WidgetProvider extends AppWidgetProvider {
     public static final String INCREMENT_ACTION = "IncrementAction";
     public static final String DECREMENT_ACTION = "DecrementAction";
 
-    public static final String INITIALIZED_KEY = "initialized";
     public static final String COUNT_KEY = "count";
     public static final String STEP_KEY = "step";
     public static final String LABEL_KEY = "label";
 
-    private static boolean isWidgetInitialized(int widgetId, AppWidgetManager appWidgetManager) {
-        Bundle bundle = appWidgetManager.getAppWidgetOptions(widgetId);
-        return (bundle != null) && bundle.getBoolean(INITIALIZED_KEY);
+    private static void setExtras(Intent intent, int id, String label, int count, int step) {
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+        intent.putExtra(LABEL_KEY, label);
+        intent.putExtra(COUNT_KEY, count);
+        intent.putExtra(STEP_KEY, step);
     }
 
-    private static RemoteViews createRemoteViews(Context context, int id, String label, int count) {
+    private static RemoteViews createRemoteViews(Context context, int id, String label, int count, int step) {
         RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.activity_widget);
 
         Intent incIntent = new Intent(context, WidgetProvider.class);
-        incIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+        setExtras(incIntent, id, label, count, step);
         incIntent.setAction(INCREMENT_ACTION);
-        PendingIntent incPendingIntent = PendingIntent.getBroadcast(context, 0, incIntent, 0);
+        PendingIntent incPendingIntent = PendingIntent.getBroadcast(context, id, incIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         view.setTextViewText(R.id.widget_label, label);
-        view.setPendingIntentTemplate(R.id.widget_label, incPendingIntent);
+        view.setOnClickPendingIntent(R.id.widget_label, incPendingIntent);
 
         view.setTextViewText(R.id.count_value, String.valueOf(count));
-        view.setPendingIntentTemplate(R.id.count_value, incPendingIntent);
+        view.setOnClickPendingIntent(R.id.count_value, incPendingIntent);
 
         Intent decIntent = new Intent(context, WidgetProvider.class);
-        decIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+        setExtras(decIntent, id, label, count, step);
         decIntent.setAction(DECREMENT_ACTION);
-        PendingIntent decPendingIntent = PendingIntent.getBroadcast(context, 0, decIntent, 0);
-        view.setPendingIntentTemplate(R.id.decrement_button, decPendingIntent);
+        PendingIntent decPendingIntent = PendingIntent.getBroadcast(context, id, decIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        view.setOnClickPendingIntent(R.id.decrement_button, decPendingIntent);
 
         return view;
     }
@@ -55,72 +53,81 @@ public class WidgetProvider extends AppWidgetProvider {
 
         for (int id : appWidgetIds) {
             Bundle bundle = appWidgetManager.getAppWidgetOptions(id);
-            if (isWidgetInitialized(id, appWidgetManager)) {
+            if (hasRequiredExtras(bundle)) {
                 continue;
-            }
-
-            if (bundle == null) {
-                bundle = new Bundle();
             }
 
             // TODO: parameterize in configuration activity
             String label = "Hello, widget!";
-            bundle.putBoolean(INITIALIZED_KEY, true);
-            bundle.putInt(COUNT_KEY, 0);
-            bundle.putInt(STEP_KEY, 1);
-            bundle.putString(LABEL_KEY, label);
-            appWidgetManager.updateAppWidgetOptions(id, bundle);
-
-            RemoteViews view = createRemoteViews(context, id, label, 0);
+            RemoteViews view = createRemoteViews(context, id, label, 0, 1);
             appWidgetManager.updateAppWidget(id, view);
         }
-    }
-
-    private static boolean hasRequiredExtras(Bundle bundle) {
-        return bundle.containsKey(AppWidgetManager.EXTRA_APPWIDGET_ID) &&
-                bundle.containsKey(COUNT_KEY) &&
-                bundle.containsKey(STEP_KEY);
     }
 
     @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
-        l("+onReceive");
+        l("+onReceive: " + intent.getAction());
+
+        String action = intent.getAction();
+        if (!isKnownAction(action)) {
+            return;
+        }
 
         Bundle bundle = intent.getExtras();
-        if (bundle == null || !bundle.containsKey(AppWidgetManager.EXTRA_APPWIDGET_ID) || !bundle.containsKey(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS)) {
+        b(bundle);
+        if (!hasRequiredExtras(bundle)) {
+            l(bundle == null ? "bundle null" : "bundle missing key");
             return;
         }
 
         int id = bundle.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID);
-        bundle = bundle.getBundle(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS);
-
-        if (bundle == null || !hasRequiredExtras(bundle)) {
-            return;
-        }
-
         int count = bundle.getInt(COUNT_KEY);
         int step = bundle.getInt(STEP_KEY);
         String label = bundle.getString(LABEL_KEY);
 
-        String action = intent.getAction();
         if (action.equals(INCREMENT_ACTION)) {
             count += step;
         } else if (action.equals(DECREMENT_ACTION)) {
             count -= step;
         }
 
-        bundle.putInt(COUNT_KEY, count);
-        AppWidgetManager manager = AppWidgetManager.getInstance(context);
-        manager.updateAppWidgetOptions(id, bundle);
-
         // TODO: update view instead of replacing?
-        RemoteViews view = createRemoteViews(context, id, label, count);
+        AppWidgetManager manager = AppWidgetManager.getInstance(context);
+        RemoteViews view = createRemoteViews(context, id, label, count, step);
         manager.updateAppWidget(id, view);
         l("-onReceive");
     }
 
+    private static boolean hasRequiredExtras(Bundle bundle) {
+        return bundle != null &&
+                bundle.containsKey(AppWidgetManager.EXTRA_APPWIDGET_ID) &&
+                bundle.containsKey(COUNT_KEY) &&
+                bundle.containsKey(STEP_KEY) &&
+                bundle.containsKey(LABEL_KEY);
+    }
+
+    private static boolean isKnownAction(String action) {
+        return action.equals(INCREMENT_ACTION) || action.equals(DECREMENT_ACTION);
+    }
+
     private static void l(String s) {
         Log.d("alidaka", s);
+    }
+
+    private static void b(Bundle bundle) {
+        if (bundle != null) {
+            l("bundle:");
+            for (String key : bundle.keySet()) {
+                l(String.format("| %s=%s", key, bundle.get(key)));
+            }
+            if (bundle.containsKey(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS)) {
+                l("| extras:");
+                Bundle extras = bundle.getBundle(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS);
+                for (String k : extras.keySet()) {
+                    l(String.format("| | %s=%s", k, extras.get(k)));
+                }
+            }
+        }
     }
 }

@@ -8,12 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="10sp"
+        android:gravity="center"
         android:background="#5f00" />
 
     <TextView android:id="@+id/count_value"
         android:layout_below="@id/widget_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center"
         android:background="#50f0" />
 
     <TextView android:id="@+id/decrement_button"
@@ -21,7 +23,8 @@
         android:layout_alignParentLeft="true"
         android:layout_width="20dp"
         android:layout_height="20dp"
-        android:background="#500f"
-        android:text="--" />
+        android:gravity="center"
+        android:text="--"
+        android:background="#500f" />
 
 </RelativeLayout>

@@ -15,6 +15,7 @@
         android:layout_below="@id/widget_label"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:textSize="30sp"
         android:gravity="center"
         android:background="#50f0" />
 

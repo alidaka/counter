@@ -10,12 +10,12 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 public class WidgetProvider extends AppWidgetProvider {
-    public static final String INCREMENT_ACTION = "IncrementAction";
-    public static final String DECREMENT_ACTION = "DecrementAction";
+    public static final String INCREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.INCREMENT_ACTION";
+    public static final String DECREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.DECREMENT_ACTION";
 
-    public static final String COUNT_KEY = "count";
-    public static final String STEP_KEY = "step";
-    public static final String LABEL_KEY = "label";
+    public static final String COUNT_KEY = "us.lidaka.counter.AppWidgetProvider.COUNT";
+    public static final String STEP_KEY = "us.lidaka.counter.AppWidgetProvider.STEP";
+    public static final String LABEL_KEY = "us.lidaka.counter.AppWidgetProvider.LABEL";
 
     private static void setExtras(Intent intent, int id, String label, int count, int step) {
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
@@ -24,7 +24,7 @@ public class WidgetProvider extends AppWidgetProvider {
         intent.putExtra(STEP_KEY, step);
     }
 
-    private static RemoteViews createRemoteViews(Context context, int id, String label, int count, int step) {
+    public static RemoteViews createRemoteViews(Context context, int id, String label, int count, int step) {
         RemoteViews view = new RemoteViews(context.getPackageName(), R.layout.activity_widget);
 
         Intent incIntent = new Intent(context, WidgetProvider.class);
@@ -59,7 +59,9 @@ public class WidgetProvider extends AppWidgetProvider {
 
             // TODO: parameterize in configuration activity
             String label = "Hello, widget!";
-            RemoteViews view = createRemoteViews(context, id, label, 0, 1);
+            int count = 0;
+            int step = 1;
+            RemoteViews view = createRemoteViews(context, id, label, count, step);
             appWidgetManager.updateAppWidget(id, view);
         }
     }

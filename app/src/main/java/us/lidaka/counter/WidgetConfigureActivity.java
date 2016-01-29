@@ -1,27 +1,90 @@
 package us.lidaka.counter;
 
+import android.appwidget.AppWidgetManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.NumberPicker;
+import android.widget.RemoteViews;
 import android.widget.TextView;
 
 /**
  * Created by augustus on 1/25/16.
  */
 public class WidgetConfigureActivity extends AppCompatActivity {
+
+    // TODO: remove after dev complete, needed to deploy straight to activity for UI testing
+    private static final boolean TEST = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        TextView tv = (TextView)findViewById(R.id.widget_label);
-        tv.setText("Hello, widget!");
-        // TODO: attach onClick
+        setResult(RESULT_CANCELED);
 
-        Button counter = (Button)findViewById(R.id.count_value);
-        counter.setText("0");
-        // TODO: attach onClick
+        Intent intent = getIntent();
+        int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (!TEST) {
+            if (id == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                finish();
+                return;
+            }
+        }
 
-        Button decrementer = (Button)findViewById(R.id.decrement_button);
-        // TODO: attach onClick
+        setContentView(R.layout.activity_widget_configure);
+
+        Button button = (Button)findViewById(R.id.submit);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createCounter(v);
+            }
+        });
+    }
+
+    public void createCounter(View view) {
+        Intent intent = getIntent();
+        int id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID);
+        if (!TEST) {
+            if (id == AppWidgetManager.INVALID_APPWIDGET_ID) {
+                return;
+            }
+        }
+
+        EditText labelField = (EditText)findViewById(R.id.label_field);
+        String label = labelField.getText().toString();
+
+        int step = getIntOrDefault(R.id.step_field, 1);
+        int count = getIntOrDefault(R.id.count_field, 0);
+
+        RemoteViews remoteViews = WidgetProvider.createRemoteViews(this, id, label, count, step);
+        AppWidgetManager manager = AppWidgetManager.getInstance(this);
+        manager.updateAppWidget(id, remoteViews);
+
+        Intent result = new Intent();
+        result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
+    private int getIntOrDefault(int id, int def) {
+        EditText et = (EditText)findViewById(id);
+        int value = def;
+        if (et != null) {
+            Editable e = et.getText();
+            if (e != null) {
+                String s = e.toString();
+                if (!s.isEmpty()) {
+                    value = Integer.parseInt(s);
+                }
+            }
+        }
+
+        return value;
     }
 }

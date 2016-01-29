@@ -28,13 +28,6 @@
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
-            <!-- TODO: next two should be unnecessary -->
-            <intent-filter>
-                <action android:name="us.lidaka.counter.INCREMENT_ACTION" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="us.lidaka.counter.DECREMENT_ACTION" />
-            </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/counter_widget_info" />
         </receiver>

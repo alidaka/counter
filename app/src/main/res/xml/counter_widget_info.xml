@@ -6,6 +6,6 @@
     android:previewImage="@drawable/preview"
     android:initialLayout="@layout/activity_widget"
     android:resizeMode="horizontal|vertical"
+    android:configure="us.lidaka.counter.WidgetConfigureActivity"
     android:widgetCategory="home_screen">
 </appwidget-provider>
-    <!--android:configure="us.lidaka.counter.WidgetConfigureActivity"-->

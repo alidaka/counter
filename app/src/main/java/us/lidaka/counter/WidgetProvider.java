@@ -32,9 +32,6 @@ public class WidgetProvider extends AppWidgetProvider {
         incIntent.setAction(INCREMENT_ACTION);
         PendingIntent incPendingIntent = PendingIntent.getBroadcast(context, id, incIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        view.setTextViewText(R.id.widget_label, label);
-        view.setOnClickPendingIntent(R.id.widget_label, incPendingIntent);
-
         view.setTextViewText(R.id.count_value, String.valueOf(count));
         view.setOnClickPendingIntent(R.id.count_value, incPendingIntent);
 
@@ -42,7 +39,9 @@ public class WidgetProvider extends AppWidgetProvider {
         setExtras(decIntent, id, label, count, step);
         decIntent.setAction(DECREMENT_ACTION);
         PendingIntent decPendingIntent = PendingIntent.getBroadcast(context, id, decIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        view.setOnClickPendingIntent(R.id.decrement_button, decPendingIntent);
+
+        view.setTextViewText(R.id.widget_label, label);
+        view.setOnClickPendingIntent(R.id.widget_label, decPendingIntent);
 
         return view;
     }

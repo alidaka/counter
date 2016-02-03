@@ -48,25 +48,6 @@ public class WidgetProvider extends AppWidgetProvider {
     }
 
     @Override
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-
-        for (int id : appWidgetIds) {
-            Bundle bundle = appWidgetManager.getAppWidgetOptions(id);
-            if (hasRequiredExtras(bundle)) {
-                continue;
-            }
-
-            // TODO: parameterize in configuration activity
-            String label = "Hello, widget!";
-            int count = 0;
-            int step = 1;
-            RemoteViews view = createRemoteViews(context, id, label, count, step);
-            appWidgetManager.updateAppWidget(id, view);
-        }
-    }
-
-    @Override
     public void onReceive(Context context, Intent intent) {
         super.onReceive(context, intent);
         l("+onReceive: " + intent.getAction());

@@ -9,7 +9,8 @@
         android:layout_height="wrap_content"
         android:textSize="10sp"
         android:gravity="center"
-        android:background="#5f00" />
+        android:background="#6fff"
+        android:textColor="#000"/>
 
     <TextView android:id="@+id/count_value"
         android:layout_below="@id/widget_label"
@@ -17,6 +18,7 @@
         android:layout_height="match_parent"
         android:textSize="30sp"
         android:gravity="center"
-        android:background="#50f0" />
+        android:background="#3666"
+        android:textColor="#fff"/>
 
 </RelativeLayout>

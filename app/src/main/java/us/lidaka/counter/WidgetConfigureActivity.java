@@ -13,9 +13,6 @@ import android.widget.NumberPicker;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
-/**
- * Created by augustus on 1/25/16.
- */
 public class WidgetConfigureActivity extends AppCompatActivity {
 
     // TODO: remove after dev complete, needed to deploy straight to activity for UI testing

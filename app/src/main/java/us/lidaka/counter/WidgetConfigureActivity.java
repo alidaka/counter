@@ -53,13 +53,11 @@ public class WidgetConfigureActivity extends AppCompatActivity {
             }
         }
 
-        EditText labelField = (EditText)findViewById(R.id.label_field);
-        String label = labelField.getText().toString();
+        WidgetState initialState = parseConfiguration(id);
+        initialState.persist(this);
 
-        int step = getIntOrDefault(R.id.step_field, 1);
-        int count = getIntOrDefault(R.id.count_field, 0);
+        RemoteViews remoteViews = WidgetViewFactory.createRemoteViews(this, initialState);
 
-        RemoteViews remoteViews = WidgetProvider.createRemoteViews(this, id, label, count, step);
         AppWidgetManager manager = AppWidgetManager.getInstance(this);
         manager.updateAppWidget(id, remoteViews);
 
@@ -67,6 +65,16 @@ public class WidgetConfigureActivity extends AppCompatActivity {
         result.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, id);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    private WidgetState parseConfiguration(int id) {
+        EditText labelField = (EditText)findViewById(R.id.label_field);
+        String label = labelField.getText().toString();
+
+        int step = getIntOrDefault(R.id.step_field, 1);
+        int count = getIntOrDefault(R.id.count_field, 0);
+
+        return new WidgetState(id, label, step, count);
     }
 
     private int getIntOrDefault(int id, int def) {

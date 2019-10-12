@@ -1,19 +1,16 @@
 package us.lidaka.counter;
 
+import android.app.Activity;
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.NumberPicker;
 import android.widget.RemoteViews;
-import android.widget.TextView;
 
-public class WidgetConfigureActivity extends AppCompatActivity {
+public class WidgetConfigureActivity extends Activity {
 
     // TODO: remove after dev complete, needed to deploy straight to activity for UI testing
     private static final boolean TEST = true;
@@ -35,7 +32,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_widget_configure);
 
-        Button button = (Button)findViewById(R.id.submit);
+        Button button = findViewById(R.id.submit);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,7 +65,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
     }
 
     private WidgetState parseConfiguration(int id) {
-        EditText labelField = (EditText)findViewById(R.id.label_field);
+        EditText labelField = findViewById(R.id.label_field);
         String label = labelField.getText().toString();
 
         int step = getIntOrDefault(R.id.step_field, 1);
@@ -78,7 +75,7 @@ public class WidgetConfigureActivity extends AppCompatActivity {
     }
 
     private int getIntOrDefault(int id, int def) {
-        EditText et = (EditText)findViewById(id);
+        EditText et = findViewById(id);
         int value = def;
         if (et != null) {
             Editable e = et.getText();

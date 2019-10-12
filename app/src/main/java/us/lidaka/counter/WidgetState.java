@@ -30,9 +30,7 @@ public class WidgetState implements Serializable {
             FileInputStream fis = context.openFileInput(filenameForId(id));
             ObjectInputStream ois = new ObjectInputStream(fis);
             return (WidgetState)(ois.readObject());
-        } catch (IOException e) {
-            return null;
-        } catch (ClassNotFoundException e) {
+        } catch (IOException | ClassNotFoundException e) {
             return null;
         }
     }
@@ -43,7 +41,6 @@ public class WidgetState implements Serializable {
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(this);
         } catch (IOException e) {
-            return;
         }
     }
 

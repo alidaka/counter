@@ -53,20 +53,13 @@ class WidgetProvider : AppWidgetProvider() {
     }
 
     companion object {
-        val INCREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.INCREMENT_ACTION"
-        val DECREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.DECREMENT_ACTION"
+        const val INCREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.INCREMENT_ACTION"
+        const val DECREMENT_ACTION = "us.lidaka.counter.AppWidgetProvider.DECREMENT_ACTION"
 
-        val STATE_KEY = "us.lidaka.counter.AppWidgetProvider.STATE"
+        const val STATE_KEY = "us.lidaka.counter.AppWidgetProvider.STATE"
 
         private fun unpackState(intent: Intent): WidgetState? {
-            var state: WidgetState? = null
-
-            val bundle = intent.extras
-            if (bundle != null) {
-                state = bundle.getSerializable(STATE_KEY) as WidgetState?
-            }
-
-            return state
+            return intent.extras?.getSerializable(STATE_KEY) as WidgetState
         }
 
         private fun isKnownAction(action: String): Boolean {

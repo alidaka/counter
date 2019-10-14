@@ -30,7 +30,7 @@ class WidgetConfigureActivity : Activity() {
         button.setOnClickListener { v -> createCounter(v) }
     }
 
-    fun createCounter(view: View) {
+    private fun createCounter(view: View) {
         val intent = intent
         val id = intent.getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
         if (!TEST) {

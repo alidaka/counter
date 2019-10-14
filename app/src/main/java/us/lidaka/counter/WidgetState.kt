@@ -26,16 +26,15 @@ class WidgetState(var id: Int, var label: String, var step: Int, var count: Int)
         private const val serialVersionUID: Long = 1
 
         fun load(context: Context, id: Int): WidgetState? {
-            try {
+            return try {
                 val fis = context.openFileInput(filenameForId(id))
                 val ois = ObjectInputStream(fis)
-                return ois.readObject() as WidgetState
+                ois.readObject() as WidgetState
             } catch (e: IOException) {
-                return null
+                null
             } catch (e: ClassNotFoundException) {
-                return null
+                null
             }
-
         }
 
         private fun filenameForId(id: Int): String {
